@@ -37,21 +37,18 @@ def load_data_from_directory(root_dir, target_size=(330, 380)):
     print(np.array(images).shape, np.array(labels).shape)
     return np.array(images), np.array(labels)
 
-# Example usage
+
 root_dir = './dataset1'
 X, y = load_data_from_directory(root_dir)
 
-# Split the data into training and testing sets
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-# Define and train the Random Forest classifier
+
 clf = RandomForestClassifier(n_estimators=1000, random_state=200)
 clf.fit(X_train, y_train)
 
-# Predict on the test set
 y_pred = clf.predict(X_test)
 
-# Evaluate the model
 accuracy = accuracy_score(y_test, y_pred)
 print("Accuracy:", accuracy)
 
