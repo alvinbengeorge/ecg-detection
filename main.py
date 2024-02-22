@@ -1,5 +1,6 @@
 from io import BytesIO
 from fastapi import FastAPI, UploadFile
+from fastapi.middleware.cors import CORSMiddleware
 from joblib import load
 from PIL import Image
 import numpy as np
@@ -9,6 +10,14 @@ import cv2
 
 
 app = FastAPI()
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+
+)
 model = load("random_forest_model.pkl")
 csv_classifier = load("csv_classifier.pkl")
 
