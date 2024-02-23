@@ -18,11 +18,16 @@ app.add_middleware(
     allow_headers=["*"],
 
 )
-model = load("random_forest_model.pkl")
-csv_classifier = load("csv_classifier.pkl")
+
+model = load("models/random_forest_model.pkl")
+csv_classifier = load("models/csv_classifier.pkl")
+essential_parameters = load('models/essential_parameters.pkl')
 
 class CSVData(BaseModel):
-    data: list
+    data: list[int]
+
+class Essential(BaseModel):
+    data: list[float]
 
 @app.post("/predict")
 async def predict(file: UploadFile):
@@ -43,5 +48,13 @@ async def csv_predict(data: CSVData):
     data = np.array(data.data[0:140], dtype=np.float64)
     prediction = csv_classifier.predict([data])
     return {"message": "csv", "prediction": bool(prediction[0])}
+
+@app.post("/essential_parameters")
+async def essential_parameters_predict(data: Essential):
+    np_data = np.array(data.data, dtype=np.float64)
+    np_data = 1 / (1 + np.exp(-np_data))
+    np_data = np_data.reshape(1, -1)
+    prediction = essential_parameters.predict(np_data)
+    return {"prediction": bool(prediction[0])}
 
     
